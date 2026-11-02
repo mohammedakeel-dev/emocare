@@ -1,0 +1,45 @@
+{% extends "app_base.html" %}
+{% block title %}Conversations · EmoCare{% endblock %}
+{% block header_title %}Conversation Log{% endblock %}
+{% block content %}
+  <section class="panel history-page">
+    <p class="eyebrow">Secure record</p>
+    <h2>Every reflection stays private on your device</h2>
+    {% if grouped_history %}
+      <div class="history-timeline">
+        {% for day_block in grouped_history %}
+          <article>
+            <h3>{{ day_block.day }}</h3>
+            <ul>
+              {% for message in day_block.messages %}
+                <li>
+                  <span class="time">{{ message.time }}</span>
+                  <div>
+                    <strong>{{ message.author }}</strong>
+                    {% if message.image_filename %}
+                      <div class="message-image" style="margin: 0.5rem 0;">
+                        <img src="{{ url_for('serve_image', filename=message.image_filename) }}" alt="Shared image" style="max-width: 200px; border-radius: 8px;" />
+                      </div>
+                    {% endif %}
+                    <p>{{ message.content }}</p>
+                    <small>
+                      {{ message.emotion }}
+                      {% if message.detection_source == 'camera' %} 📷{% elif message.detection_source == 'image' %} 📎{% endif %}
+                    </small>
+                  </div>
+                  {% if message.id %}
+                    <form method="post" action="{{ url_for('delete_history_message', message_id=message.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this message?');">
+                      <button type="submit" class="delete-btn" title="Delete message">🗑️</button>
+                    </form>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="placeholder-box">No history yet. Visit the chat to start a reflection.</div>
+    {% endif %}
+  </section>
+{% endblock %}

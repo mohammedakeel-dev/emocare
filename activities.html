@@ -1,0 +1,32 @@
+{% extends "app_base.html" %}
+{% block title %}Activities · EmoCare{% endblock %}
+{% block header_title %}Activity Library{% endblock %}
+{% block content %}
+  <section class="panel activities-page">
+    <p class="eyebrow">Care rituals</p>
+    <h2>Suggestions for your current mood ({{ current_emotion }})</h2>
+    <ul class="activities-list">
+      {% for activity in activities %}
+        <li>
+          <div>
+            <strong>{{ activity.title }}</strong>
+            <p>{{ activity.subtitle }}</p>
+            {% if activity.video_query %}
+              <p class="video-suggest">Suggested video: <a href="https://www.youtube.com/results?search_query={{ activity.video_query|urlencode }}" target="_blank" rel="noopener">Watch on YouTube</a></p>
+            {% endif %}
+          </div>
+          <div class="activity-actions">
+            <button class="ghost activity-start-btn" data-duration="120">Start</button>
+            {% if activity.video_query %}
+              <a class="ghost watch-video-btn" href="https://www.youtube.com/results?search_query={{ activity.video_query|urlencode }}" target="_blank" rel="noopener">Watch video</a>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="muted">More routines will appear here as you continue to log feelings.</p>
+  </section>
+{% endblock %}
+{% block head_scripts %}
+  <script defer src="{{ url_for('static', filename='js/activities.js') }}"></script>
+{% endblock %}

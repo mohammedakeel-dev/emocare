@@ -1,0 +1,182 @@
+{% extends "app_base.html" %}
+{% block title %}Breathing Exercises · EmoCare{% endblock %}
+{% block head_scripts %}
+  <script src="{{ url_for('static', filename='js/breathing.js') }}" defer></script>
+{% endblock %}
+{% block content %}
+  <section class="breathing-section">
+    <div class="breathing-header">
+      <p class="eyebrow">Mindfulness & Relaxation</p>
+      <h2>Breathing Exercises</h2>
+      <p class="breathing-subtitle">Practice controlled breathing to reduce stress and improve focus</p>
+    </div>
+
+    <div class="breathing-container">
+      <div class="breathing-exercises">
+        <div class="exercise-card" data-exercise="box">
+          <h3>📦 Box Breathing</h3>
+          <p>4-4-4-4 pattern: Inhale, hold, exhale, hold</p>
+          <button class="button-link" onclick="startBreathing('box')">Start</button>
+        </div>
+        
+        <div class="exercise-card" data-exercise="478">
+          <h3>🌙 4-7-8 Breathing</h3>
+          <p>Calming technique: Inhale 4, hold 7, exhale 8</p>
+          <button class="button-link" onclick="startBreathing('478')">Start</button>
+        </div>
+        
+        <div class="exercise-card" data-exercise="deep">
+          <h3>🌊 Deep Breathing</h3>
+          <p>Slow, deep breaths for relaxation</p>
+          <button class="button-link" onclick="startBreathing('deep')">Start</button>
+        </div>
+      </div>
+
+      <div id="breathingSession" class="breathing-session hidden">
+        <div class="breathing-circle" id="breathingCircle">
+          <div class="circle-inner">
+            <p id="breathingInstruction">Ready to begin</p>
+            <p id="breathingCount">0</p>
+          </div>
+        </div>
+        <div class="breathing-controls">
+          <button class="button-link" onclick="pauseBreathing()" id="pauseBtn">Pause</button>
+          <button class="button-link secondary" onclick="stopBreathing()">Stop</button>
+        </div>
+        <div class="breathing-stats">
+          <p>Cycles: <span id="cycleCount">0</span></p>
+          <p>Time: <span id="sessionTime">0:00</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="breathing-tips">
+      <h3>💡 Tips for Better Breathing</h3>
+      <ul>
+        <li>Find a quiet, comfortable place</li>
+        <li>Sit or lie down in a relaxed position</li>
+        <li>Close your eyes and focus on your breath</li>
+        <li>Practice daily for best results</li>
+        <li>Start with shorter sessions and gradually increase</li>
+      </ul>
+    </div>
+  </section>
+
+  <style>
+    .breathing-section {
+      padding: 2rem 0;
+    }
+
+    .breathing-header {
+      margin-bottom: 2rem;
+    }
+
+    .breathing-subtitle {
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .breathing-exercises {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .exercise-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .exercise-card h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .exercise-card p {
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .breathing-session {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 2rem;
+    }
+
+    .breathing-session.hidden {
+      display: none;
+    }
+
+    .breathing-circle {
+      width: 300px;
+      height: 300px;
+      margin: 0 auto 2rem;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .circle-inner {
+      color: white;
+      text-align: center;
+    }
+
+    .circle-inner p {
+      margin: 0.5rem 0;
+      font-size: 1.2rem;
+    }
+
+    #breathingCount {
+      font-size: 3rem;
+      font-weight: bold;
+    }
+
+    .breathing-controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .breathing-stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      color: var(--muted);
+    }
+
+    .breathing-tips {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .breathing-tips h3 {
+      margin-bottom: 1rem;
+    }
+
+    .breathing-tips ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .breathing-tips li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .breathing-tips li:last-child {
+      border-bottom: none;
+    }
+  </style>
+{% endblock %}

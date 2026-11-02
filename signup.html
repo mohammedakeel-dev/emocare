@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Join EmoCare{% endblock %}
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <p class="eyebrow">Create account</p>
+      <h2>Your emotional wellness companion</h2>
+      <p>
+        Build a gentle daily ritual with insights, supportive prompts, and activities that follow your feelings.
+      </p>
+    </div>
+    <form method="post" class="form-grid">
+      <label>
+        <span>Full name</span>
+        <input type="text" name="full_name" placeholder="Aarya Patel" required />
+      </label>
+      <label>
+        <span>Email address</span>
+        <input type="email" name="email" placeholder="you@email.com" required />
+      </label>
+      <label>
+        <span>Password</span>
+        <input type="password" name="password" placeholder="Create a strong passphrase" required />
+      </label>
+      <label>
+        <span>Confirm password</span>
+        <input type="password" name="confirm_password" placeholder="Repeat the password" required />
+      </label>
+      <button type="submit">Create my space</button>
+    </form>
+    <p class="form-footer">
+      Already have an account?
+      <a href="{{ url_for('login') }}">Log in</a> instead.
+    </p>
+  </div>
+{% endblock %}

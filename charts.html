@@ -1,0 +1,41 @@
+{% extends "app_base.html" %}
+{% block title %}Charts · EmoCare{% endblock %}
+{% block header_title %}Insights & Charts{% endblock %}
+{% block content %}
+  <section class="panel charts-page">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Weekly overview</p>
+        <h2>Deep dive into your emotional data</h2>
+      </div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-wrapper">
+        <h3>Emotion timeline</h3>
+        <canvas id="moodTrend"></canvas>
+      </div>
+      <div class="chart-wrapper">
+        <h3>Distribution</h3>
+        <canvas id="moodPie"></canvas>
+      </div>
+    </div>
+    <div class="chart-summary">
+      <h4>This week in focus</h4>
+      <ul>
+        {% for label, value in distribution_pairs %}
+          <li>
+            <strong>{{ label }}</strong>
+            <span>{{ value }} entries</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+{% endblock %}
+{% block head_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    window.EMOCARE_CHARTS = {{ chart_payload|tojson }};
+  </script>
+  <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

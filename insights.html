@@ -1,0 +1,62 @@
+{% extends "app_base.html" %}
+{% block title %}AI Insights · EmoCare{% endblock %}
+{% block header_title %}AI-Powered Insights{% endblock %}
+{% block content %}
+  <section class="panel insights-page">
+    <div class="insights-header">
+      <p class="eyebrow">Personalized intelligence</p>
+      <h2>Discover patterns in your emotional journey</h2>
+      <p>Our AI analyzes your data to reveal meaningful insights and recommendations.</p>
+    </div>
+
+    {% if insights.insights %}
+      <div class="insights-grid">
+        {% for insight in insights.insights %}
+          <article class="insight-card">
+            <div class="insight-icon">{{ insight.icon }}</div>
+            <h3>{{ insight.title }}</h3>
+            <p>{{ insight.description }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if insights.patterns %}
+      <div class="section-divider">
+        <h3>📊 Patterns Detected</h3>
+      </div>
+      <div class="insights-grid">
+        {% for pattern in insights.patterns %}
+          <article class="insight-card pattern">
+            <div class="insight-icon">{{ pattern.icon }}</div>
+            <h3>{{ pattern.title }}</h3>
+            <p>{{ pattern.description }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if insights.recommendations %}
+      <div class="section-divider">
+        <h3>💡 Personalized Recommendations</h3>
+      </div>
+      <div class="insights-grid">
+        {% for rec in insights.recommendations %}
+          <article class="insight-card recommendation">
+            <div class="insight-icon">{{ rec.icon }}</div>
+            <h3>{{ rec.title }}</h3>
+            <p>{{ rec.description }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if not insights.insights and not insights.patterns and not insights.recommendations %}
+      <div class="placeholder-box">
+        <p>Start logging your emotions to unlock AI-powered insights!</p>
+        <a href="{{ url_for('chat') }}" class="button-link">Begin your journey</a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
+

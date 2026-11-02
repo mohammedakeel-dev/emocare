@@ -1,0 +1,104 @@
+{% extends "app_base.html" %}
+{% block title %}Dashboard · EmoCare{% endblock %}
+{% block content %}
+  <section class="dashboard-grid">
+    <article class="panel highlight">
+      <div>
+        <p class="eyebrow">Today’s check-in</p>
+        <h2>{{ today_summary }}</h2>
+      </div>
+      <div class="cta-links">
+        <a href="{{ url_for('reports') }}">View full daily report →</a>
+      </div>
+    </article>
+
+    <article class="panel chart-panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Weekly mood blend</p>
+          <h3>Emotion timeline</h3>
+        </div>
+        <a href="{{ url_for('charts') }}">Open charts</a>
+      </div>
+      <canvas id="moodTrend"></canvas>
+    </article>
+
+    <article class="panel mini-grid">
+      <div>
+        <p class="eyebrow">Intensity distribution</p>
+        <canvas id="moodPie"></canvas>
+      </div>
+      <div class="daily-report">
+        <p class="eyebrow">Daily report</p>
+        <h3>{{ report_summary.top_emotion }}</h3>
+        <p>
+          {{ report_summary.entry_count }} entries · Avg intensity {{ report_summary.avg_intensity }}
+        </p>
+        <ul>
+          {% for highlight in report_summary.highlights %}
+            <li>{{ highlight }}</li>
+          {% endfor %}
+        </ul>
+        <div class="cta-links">
+          <a class="pill-link" href="{{ url_for('reports') }}">View details</a>
+          <a class="pill-link" href="{{ report_download_url }}">Download report</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel activities-panel">
+      <div class="panel-head">
+        <p class="eyebrow">Recommended activities</p>
+        <a href="{{ url_for('activities') }}">All activities</a>
+      </div>
+      <ul>
+        {% for activity in activity_suggestions %}
+          <li>
+            <div>
+              <strong>{{ activity.title }}</strong>
+              <p>{{ activity.subtitle }}</p>
+            </div>
+            <button class="ghost activity-start-btn">Start</button>
+          </li>
+        {% endfor %}
+      </ul>
+    </article>
+
+    <article class="panel conversation-panel">
+      <div class="panel-head">
+        <p class="eyebrow">Conversation history</p>
+        <a href="{{ url_for('history') }}">Open log</a>
+      </div>
+      <ul>
+        {% for convo in recent_conversations %}
+          <li>
+            <div>
+              <strong>{{ convo.title }}</strong>
+              <p>{{ convo.mood }} · {{ convo.time }}</p>
+            </div>
+            <a class="pill-link" href="{{ url_for('history') }}">View</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </article>
+
+    <article class="panel message-panel">
+      <div class="panel-head">
+        <p class="eyebrow">Check in with EmoCare</p>
+      </div>
+      <div class="dashboard-chat-cta">
+        <p>Ready to share more? Your companion is a click away.</p>
+        <a class="button-link" href="{{ url_for('chat') }}">Open chat workspace</a>
+      </div>
+    </article>
+
+  </section>
+{% endblock %}
+{% block head_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    window.EMOCARE_CHARTS = {{ chart_payload|tojson }};
+  </script>
+  <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/activities.js') }}"></script>
+{% endblock %}

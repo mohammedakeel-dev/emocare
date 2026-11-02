@@ -1,0 +1,60 @@
+{% extends "app_base.html" %}
+{% block title %}Memory · EmoCare{% endblock %}
+{% block header_title %}Memory Search{% endblock %}
+{% block content %}
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Mind-blowing feature</p>
+        <h2>🧠 Ask about your own history</h2>
+        <p class="muted">Searches your chats + journal entries stored locally and answers using what it finds.</p>
+      </div>
+    </div>
+
+    <form method="post" class="memory-form" style="margin-top: 1rem;">
+      <div style="display:flex; gap:0.75rem; align-items: stretch; flex-wrap: wrap;">
+        <input
+          type="text"
+          name="query"
+          value="{{ query or '' }}"
+          placeholder="e.g., What did I say about my teacher? / When was I happiest recently?"
+          style="flex: 1; min-width: 260px; padding: 0.9rem 1rem; border-radius: 14px; border: 1px solid var(--border);"
+          required
+        />
+        <button type="submit" class="send-btn" style="align-self: center;">Search</button>
+      </div>
+    </form>
+
+    {% if answer %}
+      <div class="analysis-card" style="margin-top: 1rem; white-space: pre-wrap;">
+        <p class="eyebrow">Answer</p>
+        <p style="margin: 0;">{{ answer }}</p>
+      </div>
+    {% endif %}
+
+    {% if matches and matches|length > 0 %}
+      <div style="margin-top: 1rem;">
+        <p class="eyebrow">Top matches</p>
+        <ul style="margin: 0; padding-left: 1.1rem;">
+          {% for m in matches %}
+            <li style="margin-bottom: 0.6rem;">
+              <strong>
+                {% if m.source == 'chat' %}Chat{% else %}Journal{% endif %}
+              </strong>
+              <small class="muted"> · score {{ (m.score * 100)|round(0) }}%</small>
+              <div class="muted" style="margin-top: 0.25rem;">
+                {% if m.source == 'journal' and m.title %}<div><strong>{{ m.title }}</strong></div>{% endif %}
+                <div style="white-space: pre-wrap;">{{ m.text }}</div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% elif query %}
+      <div class="placeholder-box" style="margin-top: 1rem;">
+        No matches yet. Try adding a few more keywords (names, place, time) and search again.
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
+

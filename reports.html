@@ -1,0 +1,38 @@
+{% extends "app_base.html" %}
+{% block title %}Daily Report · EmoCare{% endblock %}
+{% block header_title %}Daily Report{% endblock %}
+{% block content %}
+  <section class="panel reports-page">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Snapshot</p>
+        <h2>Structured daily summaries</h2>
+      </div>
+    </div>
+    <form method="post" class="report-picker">
+      <label>
+        <span>Select a date</span>
+        <input type="date" name="report_date" value="{{ target_day }}" max="{{ target_day }}">
+      </label>
+      <button type="submit">Generate report</button>
+    </form>
+
+    {% if summary.entry_count == 0 %}
+      <div class="placeholder-box">
+        No entries for this day. Share a feeling to unlock insights.
+      </div>
+    {% else %}
+      <div class="report-summary">
+        <h3>Overview</h3>
+        <p>{{ summary.entry_count }} reflections, dominant emotion {{ summary.top_emotion }}, average intensity {{ summary.avg_intensity }}/5.</p>
+        <h4>Highlights</h4>
+        <ul>
+          {% for highlight in summary.highlights %}
+            <li>{{ highlight }}</li>
+          {% endfor %}
+        </ul>
+        <a class="pill-link" href="{{ download_url }}">Download {{ report_file }}</a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

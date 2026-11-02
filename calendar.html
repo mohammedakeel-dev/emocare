@@ -1,0 +1,56 @@
+{% extends "app_base.html" %}
+{% block title %}Mood Calendar · EmoCare{% endblock %}
+{% block header_title %}Mood Calendar{% endblock %}
+{% block content %}
+  <section class="panel calendar-page">
+    <div class="calendar-header">
+      <p class="eyebrow">Visual journey</p>
+      <h2>{{ calendar_data.month }}</h2>
+      <p>See your emotional patterns at a glance</p>
+    </div>
+
+    <div class="mood-calendar">
+      <div class="calendar-weekdays">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Calendar days will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <div class="calendar-legend">
+      <h3>Legend</h3>
+      <div class="legend-items">
+        <div class="legend-item"><span class="legend-color" style="background: #fbbf24;"></span> Happiness</div>
+        <div class="legend-item"><span class="legend-color" style="background: #22d3ee;"></span> Calm</div>
+        <div class="legend-item"><span class="legend-color" style="background: #f97316;"></span> Stress</div>
+        <div class="legend-item"><span class="legend-color" style="background: #60a5fa;"></span> Anxiety</div>
+        <div class="legend-item"><span class="legend-color" style="background: #a78bfa;"></span> Depression</div>
+        <div class="legend-item"><span class="legend-color" style="background: #f87171;"></span> Anger</div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+{% block head_scripts %}
+  <script>
+    const calendarData = {{ calendar_data.calendar_data|tojson }};
+    const firstDay = new Date('{{ calendar_data.first_day }}');
+    const lastDay = new Date('{{ calendar_data.last_day }}');
+    const emotionColors = {
+      "Happiness": "#fbbf24",
+      "Calm": "#22d3ee",
+      "Stress": "#f97316",
+      "Anxiety": "#60a5fa",
+      "Depression": "#a78bfa",
+      "Anger": "#f87171",
+    };
+  </script>
+  <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+{% endblock %}
+

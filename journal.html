@@ -1,0 +1,211 @@
+{% extends "app_base.html" %}
+{% block title %}Journal · EmoCare{% endblock %}
+{% block content %}
+  <section class="journal-section">
+    <div class="journal-header">
+      <div>
+        <p class="eyebrow">Personal Journal</p>
+        <h2>Your Thoughts & Reflections</h2>
+        <p class="journal-subtitle">Write freely about your day, feelings, and experiences</p>
+      </div>
+      <button class="button-link" onclick="showJournalForm()">+ New Entry</button>
+    </div>
+
+    <!-- Journal Entry Form -->
+    <div id="journalForm" class="journal-form hidden">
+      <form method="POST" action="{{ url_for('journal') }}">
+        <input type="hidden" name="action" value="create">
+        <div class="form-group">
+          <label>Title (optional)</label>
+          <input type="text" name="title" placeholder="Give your entry a title...">
+        </div>
+        <div class="form-group">
+          <label>How are you feeling?</label>
+          <select name="emotion">
+            <option value="">Select emotion...</option>
+            <option value="Happiness">😊 Happiness</option>
+            <option value="Neutral">😌 Neutral</option>
+            <option value="Stress">😩 Stress</option>
+            <option value="Sadness">😢 Sadness</option>
+            <option value="Anger">😠 Anger</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mood Rating (1-10)</label>
+          <input type="range" name="mood_rating" min="1" max="10" value="5" oninput="this.nextElementSibling.textContent = this.value">
+          <span>5</span>
+        </div>
+        <div class="form-group">
+          <label>Write your thoughts...</label>
+          <textarea name="content" rows="8" placeholder="What's on your mind today?" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="button-link">Save Entry</button>
+          <button type="button" class="button-link secondary" onclick="hideJournalForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Journal Entries List -->
+    <div class="journal-entries">
+      {% if entries %}
+        {% for entry in entries %}
+          <article class="journal-entry">
+            <div class="entry-header">
+              <div>
+                <h3>{{ entry.title or "Untitled Entry" }}</h3>
+                <p class="entry-meta">
+                  {% if entry.emotion %}
+                    <span class="emotion-badge">{{ entry.emotion }}</span>
+                  {% endif %}
+                  {% if entry.mood_rating %}
+                    <span class="mood-rating">⭐ {{ entry.mood_rating }}/10</span>
+                  {% endif %}
+                  <span class="entry-date">{{ entry.created_at[:10] }}</span>
+                </p>
+              </div>
+              <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this entry?');">
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="entry_id" value="{{ entry.id }}">
+                <button type="submit" class="button-link secondary" style="font-size: 0.9rem;">Delete</button>
+              </form>
+            </div>
+            <div class="entry-content">
+              {{ entry.content | replace('\n', '<br>') | safe }}
+            </div>
+          </article>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <p>No journal entries yet. Start writing to track your thoughts and feelings!</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <style>
+    .journal-section {
+      padding: 2rem 0;
+    }
+
+    .journal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    .journal-subtitle {
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .journal-form {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .journal-form.hidden {
+      display: none;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="range"],
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+    }
+
+    .form-group input[type="range"] {
+      width: calc(100% - 3rem);
+      display: inline-block;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .journal-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .journal-entry {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .entry-header h3 {
+      margin: 0 0 0.5rem 0;
+    }
+
+    .entry-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .emotion-badge {
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .mood-rating {
+      color: var(--accent);
+    }
+
+    .entry-content {
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+  </style>
+
+  <script>
+    function showJournalForm() {
+      document.getElementById('journalForm').classList.remove('hidden');
+      document.getElementById('journalForm').scrollIntoView({ behavior: 'smooth' });
+    }
+    function hideJournalForm() {
+      document.getElementById('journalForm').classList.add('hidden');
+    }
+  </script>
+{% endblock %}

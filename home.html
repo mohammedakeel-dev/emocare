@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · EmoCare{% endblock %}
+{% block content %}
+  <div class="dashboard">
+    <header class="dashboard-hero">
+      <div>
+        <p class="eyebrow">Welcome back</p>
+        <h2>Hi {{ user_name }}, here is your emotional pulse.</h2>
+        <p>Your latest entries feed these insights. Tap any tile to explore deeper views.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="ghost-link" href="{{ url_for('reports') }}">Weekly report</a>
+        <form action="{{ url_for('logout') }}" method="get">
+          <button type="submit" class="secondary">Log out</button>
+        </form>
+      </div>
+    </header>
+
+    <section class="dashboard-grid">
+      <article class="card stat-card">
+        <h3>Daily mood snapshot</h3>
+        <p class="stat-value">Neutral · 72%</p>
+        <small>Based on today’s text + expression signals.</small>
+      </article>
+      <a class="card nav-card" href="{{ url_for('reports') }}">
+        <h3>Daily report</h3>
+        <p>Tap to review logs, reflections, and personalized notes.</p>
+        <span>Open report →</span>
+      </a>
+      <a class="card nav-card" href="{{ url_for('activities') }}">
+        <h3>Activities</h3>
+        <p>Grounding walk · 10 min · Breathing box · Gratitude check-in.</p>
+        <span>See full list →</span>
+      </a>
+      <a class="card nav-card" href="{{ url_for('history') }}">
+        <h3>Conversation history</h3>
+        <p>Revisit soothing replies and coping tips whenever you need.</p>
+        <span>View threads →</span>
+      </a>
+    </section>
+
+    <section class="charts-panel card">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Week overview</p>
+          <h3>Mood distribution</h3>
+        </div>
+        <a href="{{ url_for('reports') }}" class="ghost-link">View details</a>
+      </div>
+      <canvas id="moodChart" height="140"></canvas>
+    </section>
+
+    <section class="split-panel">
+      <article class="card daily-report">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Daily report</p>
+            <h3>Key reflections</h3>
+          </div>
+          <a href="{{ url_for('reports') }}" class="ghost-link">See more</a>
+        </div>
+        <ul>
+          <li>Energy lifted after afternoon journaling routine.</li>
+          <li>Stress spike detected during meeting (11:30 am).</li>
+          <li>Try 5-minute breathwork before tomorrow’s check-in.</li>
+        </ul>
+      </article>
+
+      <article class="card activities-card">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Suggested activities</p>
+            <h3>Pick a calming ritual</h3>
+          </div>
+          <a href="{{ url_for('activities') }}" class="ghost-link">All activities</a>
+        </div>
+        <div class="chip-row">
+          <button type="button">Grounding walk</button>
+          <button type="button">Box breathing</button>
+          <button type="button">Body scan</button>
+        </div>
+        <div class="chip-row">
+          <button type="button">Gratitude journaling</button>
+          <button type="button">Tea ritual</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="card convo-card">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Stay connected</p>
+          <h3>Messaging space</h3>
+        </div>
+        <a href="{{ url_for('history') }}" class="ghost-link">Past threads</a>
+      </div>
+      <div class="conversation-feed">
+        <div class="bubble bubble-assistant">
+          <p>How would you describe your energy right now?</p>
+        </div>
+        <div class="bubble bubble-user">
+          <p>A bit low but hopeful after the afternoon walk.</p>
+        </div>
+      </div>
+      <form class="composer">
+        <div class="composer-actions">
+          <button type="button" aria-label="Upload image">
+            <span class="icon">🖼️</span>
+          </button>
+          <button type="button" aria-label="Open camera">
+            <span class="icon">📷</span>
+          </button>
+        </div>
+        <textarea placeholder="Share what’s on your mind..."></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById("moodChart");
+    if (ctx) {
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Happiness", "Neutral", "Stress", "Anger", "Sadness"],
+          datasets: [
+            {
+              label: "This week",
+              data: [18, 24, 12, 9, 6],
+              backgroundColor: ["#fbbf24", "#22d3ee", "#f97316", "#ef4444", "#a78bfa"],
+              borderRadius: 12,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 5 } },
+          },
+        },
+      });
+    }
+  </script>
+{% endblock %}

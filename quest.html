@@ -1,0 +1,88 @@
+{% extends "app_base.html" %}
+{% block title %}Daily Quest · EmoCare{% endblock %}
+{% block header_title %}Daily Mood Quest{% endblock %}
+{% block content %}
+  <section class="panel highlight" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; margin-bottom: 1.5rem;">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow" style="color: rgba(255,255,255,0.9);">Your progress</p>
+        <h2 style="color: white; margin: 0.5rem 0;">Level {{ quest_data.level }} · {{ quest_data.total_points }} Points</h2>
+        <p style="color: rgba(255,255,255,0.9); margin-top: 0.5rem;">
+          🔥 {{ quest_data.streak }} day streak
+          {% if quest_data.level < 10 %}
+            · {{ (quest_data.level * 100) - quest_data.total_points }} points to next level
+          {% else %}
+            · Max level reached! 🏆
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Today's challenges</p>
+        <h2>🎯 Your Daily Quest</h2>
+        <p class="muted">Based on your current mood: <strong>{{ current_emotion }}</strong></p>
+      </div>
+    </div>
+
+    {% if challenges %}
+      <div class="mini-grid" style="margin-top: 1rem;">
+        {% for challenge in challenges %}
+          <article class="mini-card" style="position: relative; border: 2px solid var(--border); transition: all 0.3s ease;">
+            <div style="display: flex; align-items: start; gap: 1rem;">
+              <div style="font-size: 2.5rem; line-height: 1;">{{ challenge.icon }}</div>
+              <div style="flex: 1;">
+                <h3 style="margin: 0 0 0.5rem 0;">{{ challenge.title }}</h3>
+                <p class="muted" style="margin: 0 0 0.75rem 0; font-size: 0.9rem;">{{ challenge.description }}</p>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+                  <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+                    +{{ challenge.points }} pts
+                  </span>
+                  <form method="post" style="display: inline;">
+                    <input type="hidden" name="action" value="complete">
+                    <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                    <button type="submit" class="button-link" style="font-size: 0.9rem;">Complete →</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="placeholder-box" style="margin-top: 1rem;">
+        No challenges available right now. Check back later!
+      </div>
+    {% endif %}
+
+    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+      <h3 style="margin-bottom: 1rem;">How it works</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+        <li style="display: flex; align-items: start; gap: 0.75rem;">
+          <span style="font-size: 1.5rem;">🎯</span>
+          <div>
+            <strong>Complete challenges</strong>
+            <p class="muted" style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">Earn points by completing daily challenges tailored to your mood</p>
+          </div>
+        </li>
+        <li style="display: flex; align-items: start; gap: 0.75rem;">
+          <span style="font-size: 1.5rem;">📈</span>
+          <div>
+            <strong>Level up</strong>
+            <p class="muted" style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">Every 100 points = 1 level. Track your wellness journey!</p>
+          </div>
+        </li>
+        <li style="display: flex; align-items: start; gap: 0.75rem;">
+          <span style="font-size: 1.5rem;">🔥</span>
+          <div>
+            <strong>Build streaks</strong>
+            <p class="muted" style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">Complete at least one challenge daily to maintain your streak</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+{% endblock %}

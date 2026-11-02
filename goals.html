@@ -1,0 +1,323 @@
+{% extends "app_base.html" %}
+{% block title %}Goals & Achievements · EmoCare{% endblock %}
+{% block content %}
+  <section class="goals-section">
+    <div class="goals-header">
+      <div>
+        <p class="eyebrow">Goals & Achievements</p>
+        <h2>Track Your Progress</h2>
+        <p class="goals-subtitle">Set goals, build streaks, and unlock achievements</p>
+      </div>
+      <button class="button-link" onclick="showGoalForm()">+ New Goal</button>
+    </div>
+
+    <!-- Goal Form -->
+    <div id="goalForm" class="goal-form hidden">
+      <form method="POST" action="{{ url_for('goals') }}">
+        <input type="hidden" name="action" value="create">
+        <div class="form-group">
+          <label>Goal Title *</label>
+          <input type="text" name="title" placeholder="e.g., Meditate daily" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea name="description" rows="3" placeholder="Describe your goal..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select name="category">
+              <option value="">Select category...</option>
+              <option value="Wellness">Wellness</option>
+              <option value="Emotional">Emotional</option>
+              <option value="Physical">Physical</option>
+              <option value="Social">Social</option>
+              <option value="Personal">Personal</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Target Date</label>
+            <input type="date" name="target_date">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="button-link">Create Goal</button>
+          <button type="button" class="button-link secondary" onclick="hideGoalForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Streaks -->
+    <div class="streaks-panel">
+      <h3>🔥 Your Streaks</h3>
+      <div class="streaks-grid">
+        <div class="streak-card">
+          <div class="streak-icon">💬</div>
+          <div class="streak-info">
+            <p class="streak-label">Chat Streak</p>
+            <p class="streak-value">{{ streaks.get('chat', {}).get('current_streak', 0) or 0 }} days</p>
+          </div>
+        </div>
+        <div class="streak-card">
+          <div class="streak-icon">📔</div>
+          <div class="streak-info">
+            <p class="streak-label">Journal Streak</p>
+            <p class="streak-value">{{ streaks.get('journal', {}).get('current_streak', 0) or 0 }} days</p>
+          </div>
+        </div>
+        <div class="streak-card">
+          <div class="streak-icon">🧘</div>
+          <div class="streak-info">
+            <p class="streak-label">Breathing Streak</p>
+            <p class="streak-value">{{ streaks.get('breathing', {}).get('current_streak', 0) or 0 }} days</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals List -->
+    <div class="goals-list">
+      <h3>Your Goals</h3>
+      {% if goals %}
+        <div class="goals-grid">
+          {% for goal in goals %}
+            <div class="goal-card {% if goal.completed %}completed{% endif %}">
+              <div class="goal-header">
+                <h4>{{ goal.title }}</h4>
+                {% if goal.completed %}
+                  <span class="completed-badge">✓ Completed</span>
+                {% endif %}
+              </div>
+              {% if goal.description %}
+                <p class="goal-description">{{ goal.description }}</p>
+              {% endif %}
+              <div class="goal-meta">
+                {% if goal.category %}
+                  <span class="goal-category">{{ goal.category }}</span>
+                {% endif %}
+                {% if goal.target_date %}
+                  <span class="goal-date">Target: {{ goal.target_date }}</span>
+                {% endif %}
+              </div>
+              <div class="goal-actions">
+                {% if not goal.completed %}
+                  <form method="POST" style="display: inline;">
+                    <input type="hidden" name="action" value="complete">
+                    <input type="hidden" name="goal_id" value="{{ goal.id }}">
+                    <button type="submit" class="button-link">Mark Complete</button>
+                  </form>
+                {% endif %}
+                <form method="POST" style="display: inline;" onsubmit="return confirm('Delete this goal?');">
+                  <input type="hidden" name="action" value="delete">
+                  <input type="hidden" name="goal_id" value="{{ goal.id }}">
+                  <button type="submit" class="button-link secondary">Delete</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <p>No goals yet. Create your first goal to start tracking progress!</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Achievements -->
+    <div class="achievements-panel">
+      <h3>🏆 Achievements</h3>
+      {% if achievements %}
+        <div class="achievements-grid">
+          {% for achievement in achievements %}
+            <div class="achievement-card">
+              <div class="achievement-icon">🏅</div>
+              <div class="achievement-info">
+                <p class="achievement-name">{{ achievement.achievement_name }}</p>
+                <p class="achievement-date">Unlocked: {{ achievement.unlocked_at[:10] }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <p>Complete activities to unlock achievements!</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <style>
+    .goals-section {
+      padding: 2rem 0;
+    }
+
+    .goals-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    .goal-form {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .goal-form.hidden {
+      display: none;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .streaks-panel, .goals-list, .achievements-panel {
+      margin-bottom: 3rem;
+    }
+
+    .streaks-panel h3, .goals-list h3, .achievements-panel h3 {
+      margin-bottom: 1.5rem;
+    }
+
+    .streaks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .streak-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .streak-icon {
+      font-size: 2.5rem;
+    }
+
+    .streak-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0.25rem 0 0 0;
+    }
+
+    .streak-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .goal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .goal-card.completed {
+      opacity: 0.7;
+      background: var(--bg);
+    }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .goal-header h4 {
+      margin: 0;
+    }
+
+    .completed-badge {
+      background: var(--success);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+
+    .goal-description {
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .goal-meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .goal-category {
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 8px;
+    }
+
+    .goal-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .achievement-card {
+      background: var(--card);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .achievement-icon {
+      font-size: 2.5rem;
+    }
+
+    .achievement-name {
+      font-weight: 600;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .achievement-date {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  </style>
+
+  <script>
+    function showGoalForm() {
+      document.getElementById('goalForm').classList.remove('hidden');
+      document.getElementById('goalForm').scrollIntoView({ behavior: 'smooth' });
+    }
+    function hideGoalForm() {
+      document.getElementById('goalForm').classList.add('hidden');
+    }
+  </script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Daily Report  EmoCare{% endblock %}
+{% block content %}
+  <section class="card detail-card">
+    <header>
+      <div>
+        <p class="eyebrow">Daily check-in</p>
+        <h2>Reflective summary</h2>
+      </div>
+      <a class="secondary" href="{{ url_for('home') }}">Back to dashboard</a>
+    </header>
+    <div class="report-grid">
+      <div>
+        <h4>Highlights</h4>
+        <ul class="report-list">
+          <li>Emotion stabilized from anxiety (Mon) to calm (Thu).</li>
+          <li>Breathing routine reduced stress spikes by 15%.</li>
+          <li>Sleep improved after mindful evening ritual.</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Focus suggestions</h4>
+        <ol class="report-list numbered">
+          <li>Try a 5-minute grounding before work.</li>
+          <li>Celebrate small wins via gratitude notes.</li>
+          <li>Schedule a midweek outdoor break.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+{% endblock %}

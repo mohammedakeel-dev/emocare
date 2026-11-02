@@ -1,0 +1,53 @@
+{% extends "app_base.html" %}
+{% block title %}Achievements · EmoCare{% endblock %}
+{% block header_title %}Your Achievements{% endblock %}
+{% block content %}
+  <section class="panel achievements-page">
+    <div class="achievements-header">
+      <p class="eyebrow">Your progress</p>
+      <h2>Level {{ achievements.level }} · {{ achievements.current_streak }} day streak 🔥</h2>
+      <p>Keep going! You've logged {{ achievements.total_messages }} emotions so far.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value">{{ achievements.total_messages }}</div>
+        <div class="stat-label">Total Logs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value">{{ achievements.current_streak }}</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value">{{ achievements.level }}</div>
+        <div class="stat-label">Level</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value">{{ achievements.achievements|length }}</div>
+        <div class="stat-label">Badges Earned</div>
+      </div>
+    </div>
+
+    <div class="achievements-grid">
+      {% for achievement in achievements.achievements %}
+        <article class="achievement-card earned">
+          <div class="achievement-icon">{{ achievement.icon }}</div>
+          <h3>{{ achievement.name }}</h3>
+          <p>{{ achievement.description }}</p>
+        </article>
+      {% endfor %}
+    </div>
+
+    {% if achievements.achievements|length == 0 %}
+      <div class="placeholder-box">
+        <p>Start your journey to unlock achievements!</p>
+        <a href="{{ url_for('chat') }}" class="button-link">Begin logging</a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
+
