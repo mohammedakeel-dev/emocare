@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Join EmoCare · Emotional Sanctuary{% endblock %}
+{% block content %}
+  <div class="card-header">
+    <div class="section-index">01 / MEMBERSHIP</div>
+    <h2>Create Sanctuary</h2>
+    <p style="margin-top: 0.25rem;">Build a gentle daily ritual with empathetic insights and soothing activities.</p>
+  </div>
+  <form method="post" class="form-grid">
+    <label>
+      <span>Full name</span>
+      <input type="text" name="full_name" placeholder="Aarya Patel" autocomplete="name" required />
+    </label>
+    <label>
+      <span>Email address</span>
+      <input type="email" name="email" placeholder="you@email.com" autocomplete="email" required />
+    </label>
+    <label>
+      <span>Password</span>
+      <input type="password" name="password" placeholder="Create a strong password" autocomplete="new-password" required />
+    </label>
+    <label>
+      <span>Confirm password</span>
+      <input type="password" name="confirm_password" placeholder="Repeat your password" autocomplete="new-password" required />
+    </label>
+    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Create My Space</button>
+  </form>
+  <p class="form-footer">
+    Already have an account?
+    <a href="{{ url_for('login') }}">Log in</a> instead.
+  </p>
+{% endblock %}

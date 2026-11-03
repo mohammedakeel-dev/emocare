@@ -1,0 +1,68 @@
+{% extends "app_base.html" %}
+{% block title %}Memory Recall · EmoCare{% endblock %}
+{% block header_title %}Memory Recall{% endblock %}
+
+{% block content %}
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Personal Semantic Memory</p>
+        <h2>🧠 Query Your Emotional History</h2>
+        <p class="muted" style="margin-top: 0.35rem;">Searches your private chat and journal entries locally to uncover answers and patterns from your past.</p>
+      </div>
+    </div>
+
+    <form method="post" class="memory-form" style="margin-top: 1.5rem;">
+      <div style="display: flex; gap: 0.75rem; align-items: stretch; flex-wrap: wrap;">
+        <input
+          type="text"
+          name="query"
+          value="{{ query or '' }}"
+          placeholder="e.g., When was I happiest recently? / What did I write about my anxiety?"
+          style="flex: 1; min-width: 280px; padding: 0.9rem 1.25rem;"
+          required
+        />
+        <button type="submit" class="send-btn" style="padding: 0.9rem 1.75rem;">
+          <span>Search Memory</span>
+          <span>🔍</span>
+        </button>
+      </div>
+    </form>
+
+    {% if answer %}
+      <div class="analysis-card" style="margin-top: 1.75rem;">
+        <p class="eyebrow">Synthesized Memory Insight</p>
+        <p style="margin: 0.25rem 0 0; color: var(--text-primary); font-size: 1.05rem; line-height: 1.6; white-space: pre-wrap;">{{ answer }}</p>
+      </div>
+    {% endif %}
+
+    {% if matches and matches|length > 0 %}
+      <div style="margin-top: 2rem;">
+        <p class="eyebrow">Correlated Memory Snippets</p>
+        <ul style="list-style: none; padding: 0; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.85rem;">
+          {% for m in matches %}
+            <li style="padding: 1.25rem; border-radius: var(--radius-lg); background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.85); box-shadow: var(--shadow-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <span class="tag" style="background: var(--accent-soft); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.8rem;">
+                  {% if m.source == 'chat' %}💬 Chat Log{% else %}📔 Journal Reflection{% endif %}
+                </span>
+                <small class="muted" style="font-weight: 600;">Relevance {{ (m.score * 100)|round(0) }}%</small>
+              </div>
+              <div style="margin-top: 0.5rem; color: var(--text-secondary); line-height: 1.6;">
+                {% if m.source == 'journal' and m.title %}
+                  <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">{{ m.title }}</div>
+                {% endif %}
+                <div style="white-space: pre-wrap; font-size: 0.95rem;">{{ m.text }}</div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% elif query %}
+      <div class="placeholder-box" style="margin-top: 1.5rem;">
+        <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">No Direct Matches Found</p>
+        <p>Try rephrasing with different keywords (e.g. emotions, specific people, or time frames).</p>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

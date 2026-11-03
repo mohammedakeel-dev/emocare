@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Log in · EmoCare{% endblock %}
+{% block content %}
+  <div class="card-header">
+    <div class="section-index">01 / AUTHENTICATION</div>
+    <h2>Enter Safe Space</h2>
+    <p style="margin-top: 0.25rem;">Continue tracking your emotional wellbeing journey with EmoCare.</p>
+  </div>
+  <form method="post" class="form-grid">
+    <label>
+      <span>Email address</span>
+      <input type="email" name="email" placeholder="you@email.com" autocomplete="email" required />
+    </label>
+    <label>
+      <span>Password</span>
+      <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+    </label>
+    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Enter EmoCare</button>
+  </form>
+  <p class="form-footer">
+    New here?
+    <a href="{{ url_for('signup') }}">Create an account</a> to start caring for your mind.
+  </p>
+{% endblock %}

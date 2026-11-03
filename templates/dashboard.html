@@ -1,0 +1,58 @@
+{% extends "app_base.html" %}
+{% block title %}Your emotional space · EmoCare{% endblock %}
+{% block page_label %}Overview{% endblock %}
+{% block header_title %}A softer place to land{% endblock %}
+{% block page_subtitle %}Notice the small things. They’re part of your story, too.{% endblock %}
+
+{% block content %}
+<section class="dashboard-view">
+  <article class="pulse-feature">
+    <div class="pulse-feature-art" aria-hidden="true"><span class="pulse-halo pulse-halo-one"></span><span class="pulse-halo pulse-halo-two"></span><span class="pulse-seed">✳</span><span class="pulse-orbit-dot"></span></div>
+    <div class="pulse-copy"><span class="feature-label"><i></i> TODAY’S PULSE</span><h2>{{ today_summary }}</h2><p>There’s no right way to feel. Let’s simply make room for what’s here.</p><a class="feature-link" href="{{ url_for('charts') }}">Explore your patterns <span>↗</span></a></div>
+    <div class="pulse-caption"><span>01</span><span>YOUR CHECK-IN</span></div>
+  </article>
+
+  <div class="dashboard-topline"><div><span class="section-eyebrow">YOUR INNER WEATHER</span><h2>Patterns, with perspective</h2></div><a class="quiet-link" href="{{ url_for('reports') }}">Open your report <span>↗</span></a></div>
+
+  <section class="insight-grid" aria-label="Mood insights">
+    <article class="insight-panel trend-panel">
+      <div class="insight-panel-heading"><div><span class="section-eyebrow">OVER THE LAST WEEK</span><h3>Mood in motion</h3></div><span class="panel-mark panel-mark-wave">⌁</span></div>
+      <div class="chart-wrap"><canvas id="moodTrend" aria-label="Mood trend over the last week" role="img"></canvas></div>
+      <a class="panel-foot-link" href="{{ url_for('charts') }}">See all patterns <span>→</span></a>
+    </article>
+    <article class="insight-panel distribution-panel">
+      <div class="insight-panel-heading"><div><span class="section-eyebrow">A CLOSER LOOK</span><h3>Intensity &amp; care</h3></div><span class="panel-mark">◌</span></div>
+      <div class="distribution-chart"><canvas id="moodPie" aria-label="Mood intensity distribution" role="img"></canvas></div>
+      <div class="daily-report">
+        <div class="summary-kicker">TODAY’S REFLECTIONS</div>
+        <h4>{{ report_summary.top_emotion }}</h4>
+        <p>{{ report_summary.entry_count }} reflections <span aria-hidden="true">·</span> Average intensity {{ report_summary.avg_intensity }}/5</p>
+        {% if report_summary.highlights %}<ul class="insight-notes">{% for highlight in report_summary.highlights %}<li><span>✳</span>{{ highlight }}</li>{% endfor %}</ul>{% endif %}
+        <div class="summary-actions"><a class="btn btn-soft" href="{{ url_for('reports') }}">Read report</a><a class="text-link" href="{{ report_download_url }}">Download PDF</a></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="care-lane">
+    <div class="lane-heading"><div><span class="section-eyebrow">A GENTLE NEXT STEP</span><h2>Care that fits today</h2></div><a class="quiet-link" href="{{ url_for('activities') }}">All rituals <span>↗</span></a></div>
+    <div class="ritual-list">
+      {% for activity in activity_suggestions %}<article class="ritual-item"><span class="ritual-index">{{ '%02d'|format(loop.index) }}</span><div class="ritual-copy"><h3>{{ activity.title }}</h3><p>{{ activity.subtitle }}</p></div><button class="ritual-start activity-start-btn" type="button" aria-label="Start {{ activity.title }}">Begin <span>→</span></button></article>{% endfor %}
+    </div>
+  </section>
+
+  <section class="conversation-shelf">
+    <div class="conversation-intro"><span class="section-eyebrow">YOUR WORDS, HELD GENTLY</span><h2>Return to a thought</h2><p>Every conversation is a small act of listening to yourself.</p><a class="quiet-link" href="{{ url_for('history') }}">View conversation history <span>↗</span></a></div>
+    <div class="recent-list">{% for convo in recent_conversations %}<a class="recent-entry" href="{{ url_for('history') }}"><span class="recent-symbol">“</span><span class="recent-copy"><strong>{{ convo.title }}</strong><small>{{ convo.mood }} <i>·</i> {{ convo.time }}</small></span><span class="recent-arrow">↗</span></a>{% else %}<div class="recent-empty">Your conversations will find a home here.</div>{% endfor %}</div>
+  </section>
+
+  <a class="companion-banner" href="{{ url_for('chat') }}"><span class="companion-mark">◌</span><span class="companion-copy"><small>WHENEVER YOU’RE READY</small><strong>There’s room to talk it through.</strong></span><span class="companion-arrow">↗</span></a>
+</section>
+{% endblock %}
+
+{% block head_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>window.EMOCARE_CHARTS = {{ chart_payload | tojson }};</script>
+<script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script defer src="{{ url_for('static', filename='js/activities.js') }}"></script>
+{% endblock %}
+

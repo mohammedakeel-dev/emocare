@@ -1,0 +1,69 @@
+{% extends "dashboard_base.html" %}
+{% block title %}Daily Report · EmoCare{% endblock %}
+{% block content %}
+  <section class="timeline-card detail-card" style="padding: 2.2rem;">
+    <header class="panel-head">
+      <div>
+        <div class="section-index">01 / REFLECTIVE SUMMARY</div>
+        <h2>Daily Check-In Summary</h2>
+      </div>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+    </header>
+    <div class="report-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+      <div class="mini-card" style="padding: 1.5rem;">
+        <div class="section-index">OBSERVATIONS</div>
+        <h4 style="margin-bottom: 0.85rem; color: #ffffff;">Key Highlights</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.65rem;">
+          <li style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; color: var(--text);">
+            <span class="status-dot"></span> Emotion stabilized from stress to calm.
+          </li>
+          <li style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; color: var(--text);">
+            <span class="status-dot"></span> Breathing routine reduced stress spikes by 15%.
+          </li>
+          <li style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; color: var(--text);">
+            <span class="status-dot"></span> Sleep improved after mindful evening ritual.
+          </li>
+        </ul>
+      </div>
+      <div class="mini-card" style="padding: 1.5rem;">
+        <div class="section-index">ACTION ITEMS</div>
+        <h4 style="margin-bottom: 0.85rem; color: #ffffff;">Focus Suggestions</h4>
+        <ol style="padding-left: 1.25rem; margin: 0; display: flex; flex-direction: column; gap: 0.65rem; color: var(--muted); font-size: 0.92rem;">
+          <li>Try a 5-minute grounding practice before your workday.</li>
+          <li>Celebrate small daily accomplishments with gentle gratitude notes.</li>
+          <li>Schedule a restorative outdoor walk or stretch break.</li>
+        </ol>
+      </div>
+    </div>
+    <a class="button-link secondary small" href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+  </header>
+  <div class="report-grid"
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+    <div
+      style="background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(226, 232, 240, 0.85); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+      <h4 style="margin-bottom: 0.85rem; color: var(--accent);">Key Observations</h4>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.65rem;">
+        <li style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; color: var(--text-secondary);">
+          <span style="color: var(--accent);">✓</span> Emotion stabilized from stress to calm.
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; color: var(--text-secondary);">
+          <span style="color: var(--accent);">✓</span> Breathing routine reduced stress spikes by 15%.
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; color: var(--text-secondary);">
+          <span style="color: var(--accent);">✓</span> Sleep improved after mindful evening ritual.
+        </li>
+      </ul>
+    </div>
+    <div
+      style="background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(226, 232, 240, 0.85); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm);">
+      <h4 style="margin-bottom: 0.85rem; color: var(--accent);">Focus Suggestions</h4>
+      <ol
+        style="padding-left: 1.25rem; margin: 0; display: flex; flex-direction: column; gap: 0.65rem; color: var(--text-secondary); font-size: 0.92rem;">
+        <li>Try a 5-minute grounding practice before your workday.</li>
+        <li>Celebrate small daily accomplishments with gentle gratitude notes.</li>
+        <li>Schedule a restorative outdoor walk or stretch break.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+{% endblock %}

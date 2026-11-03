@@ -1,0 +1,79 @@
+{% extends "app_base.html" %}
+{% block title %}Daily Quest · EmoCare{% endblock %}
+{% block header_title %}Daily Mood Quest{% endblock %}
+
+{% block content %}
+  <section class="panel highlight" style="background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), transparent 50%), rgba(255, 255, 255, 0.02); border-color: var(--border-strong); margin-bottom: 2rem;">
+    <div class="panel-head">
+      <div>
+        <div class="section-index">01 / QUEST STATUS</div>
+        <h2 style="color: #ffffff; margin: 0.35rem 0;">Level {{ quest_data.level }} · {{ quest_data.total_points }} Points</h2>
+        <p style="margin-top: 0.35rem;">
+          🔥 {{ quest_data.streak }} day streak
+          {% if quest_data.level < 10 %}
+            · {{ (quest_data.level * 100) - quest_data.total_points }} points to next tier
+          {% else %}
+            · Maximum mastery reached! 🏆
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="section-index">02 / DAILY CHALLENGES</div>
+        <h2>🎯 Your Mood Quest</h2>
+        <p style="margin-top: 0.35rem;">Challenges adapted for your current state: <strong style="color: #ffffff;">{{ current_emotion }}</strong></p>
+      </div>
+    </div>
+
+    {% if challenges %}
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+        {% for challenge in challenges %}
+          <article class="timeline-card" style="padding: 1.8rem;">
+            <div style="display: flex; align-items: start; gap: 1.25rem;">
+              <div style="font-size: 2.6rem; line-height: 1;">{{ challenge.icon }}</div>
+              <div style="flex: 1;">
+                <h3 style="margin: 0 0 0.35rem 0; color: #ffffff;">{{ challenge.title }}</h3>
+                <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: var(--muted); line-height: 1.6;">{{ challenge.description }}</p>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid var(--border);">
+                  <span class="tag">
+                    +{{ challenge.points }} pts
+                  </span>
+                  <form method="post" style="display: inline;">
+                    <input type="hidden" name="action" value="complete">
+                    <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                    <button type="submit" class="btn btn-primary btn-sm">Complete →</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="placeholder-box" style="margin-top: 1.5rem;">
+        <div class="section-index" style="justify-content: center;">NO CHALLENGES AVAILABLE</div>
+        <p>No challenges available right now. Check back later!</p>
+      </div>
+    {% endif %}
+
+    <div class="timeline-card" style="margin-top: 2.5rem; padding: 1.8rem;">
+      <div class="section-index">03 / HOW QUESTS WORK</div>
+      <h3 style="margin-bottom: 1rem;">System Rules</h3>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+        <li style="display: flex; align-items: center; gap: 0.75rem; color: var(--text);">
+          <span class="status-dot"></span> Complete daily actions tailored to regulate your state.
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.75rem; color: var(--text);">
+          <span class="status-dot"></span> Every 100 points elevates your sanctuary level.
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.75rem; color: var(--text);">
+          <span class="status-dot"></span> Maintain your daily streak to build long-term emotional resilience.
+        </li>
+      </ul>
+    </div>
+  </section>
+{% endblock %}

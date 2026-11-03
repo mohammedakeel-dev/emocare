@@ -1,0 +1,56 @@
+{% extends "app_base.html" %}
+{% block title %}Daily Reports · EmoCare{% endblock %}
+{% block header_title %}Daily Report Generator{% endblock %}
+
+{% block content %}
+  <section class="panel reports-page">
+    <div class="panel-head">
+      <div>
+        <div class="section-index">01 / HISTORICAL SUMMARY</div>
+        <h2>Structured Daily Report</h2>
+        <p style="margin-top: 0.35rem;">Inspect your reflections for any specific date and download a full summary document.</p>
+      </div>
+    </div>
+
+    <form method="post" class="report-picker" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; margin-bottom: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.02); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+      <label style="flex: 1; min-width: 220px;">
+        <span>Select Date</span>
+        <input type="date" name="report_date" value="{{ target_day }}" max="{{ target_day }}">
+      </label>
+      <button type="submit" class="btn btn-primary">Generate Report</button>
+    </form>
+
+    {% if summary.entry_count == 0 %}
+      <div class="placeholder-box">
+        <div class="section-index" style="justify-content: center;">NO ENTRIES RECORDED</div>
+        <p style="font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">No Reflections Found For This Date</p>
+        <p>Visit Care Chat to log thoughts and unlock structured summaries.</p>
+      </div>
+    {% else %}
+      <div class="timeline-card" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border);">
+          <div>
+            <div class="section-index">DOMINANT STATE</div>
+            <h3 style="color: #ffffff; font-size: 1.8rem; margin: 0.2rem 0;">{{ summary.top_emotion }}</h3>
+            <p>{{ summary.entry_count }} reflections recorded · Average intensity: <strong>{{ summary.avg_intensity }}/5</strong></p>
+          </div>
+          {% if download_url %}
+            <a class="btn btn-primary" href="{{ download_url }}">
+              <span>📄 Download {{ report_file }}</span>
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="section-index">KEY HIGHLIGHTS</div>
+        <ul style="list-style: none; padding: 0; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          {% for highlight in summary.highlights %}
+            <li style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; color: var(--text);">
+              <span class="status-dot"></span>
+              <span>{{ highlight }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

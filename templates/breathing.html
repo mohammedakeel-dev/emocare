@@ -1,0 +1,89 @@
+{% extends "app_base.html" %}
+{% block title %}Breathing Exercises · EmoCare{% endblock %}
+{% block header_title %}Breathing Sanctuary{% endblock %}
+
+{% block head_scripts %}
+<script src="{{ url_for('static', filename='js/breathing.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+  <section class="breathing-section" style="max-width: 1000px; margin: 0 auto;">
+    <div class="breathing-header" style="margin-bottom: 2.5rem;">
+      <div class="section-index">01 / MINDFULNESS & RELAXATION</div>
+      <h2>Guided Breathwork Cycles</h2>
+      <p style="margin-top: 0.35rem;">Scientific breathing patterns engineered to stimulate vagal nerve tone and lower systemic tension.</p>
+    </div>
+
+    <div class="breathing-container">
+      <!-- Exercise Selection Cards -->
+      <div class="breathing-exercises" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+        <div class="exercise-card timeline-card" data-exercise="box">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📦</div>
+          <h3>Box Breathing</h3>
+          <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.92rem;">4-4-4-4 pattern: Inhale, hold, exhale, hold. Heightens focus and mental stillness.</p>
+          <button class="btn btn-primary" onclick="startBreathing('box')" style="width: 100%;">Start Box Cycle</button>
+        </div>
+
+        <div class="exercise-card timeline-card" data-exercise="478">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🌙</div>
+          <h3>4-7-8 Breathing</h3>
+          <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.92rem;">Deep calming technique: Inhale 4s, hold 7s, exhale 8s. Natural parasympathetic reset.</p>
+          <button class="btn btn-primary" onclick="startBreathing('478')" style="width: 100%;">Start 4-7-8 Cycle</button>
+        </div>
+
+        <div class="exercise-card timeline-card" data-exercise="deep">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🌊</div>
+          <h3>Deep Ocean Breath</h3>
+          <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.92rem;">Continuous 5s flow: Slow, deep ocean breaths to gently dispel somatic tension.</p>
+          <button class="btn btn-primary" onclick="startBreathing('deep')" style="width: 100%;">Start Deep Cycle</button>
+        </div>
+      </div>
+    </div>
+
+      <!-- Live Session View -->
+      <div id="breathingSession" class="breathing-session timeline-card hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3.5rem 1.5rem; margin-bottom: 2.5rem;">
+        <div class="section-index">SESSION ACTIVE</div>
+        <div class="breathing-circle" id="breathingCircle">
+          <div class="circle-inner" style="text-align: center;">
+            <p id="breathingInstruction">Ready to begin</p>
+            <p id="breathingCount">0</p>
+          </div>
+        </div>
+        <div class="breathing-controls" style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button class="btn btn-primary" onclick="pauseBreathing()" id="pauseBtn">Pause</button>
+          <button class="btn btn-secondary" onclick="stopBreathing()">Complete</button>
+        </div>
+        <div class="breathing-stats" style="display: flex; gap: 2.5rem; margin-top: 1.75rem; font-family: var(--font-mono); font-size: 0.95rem; color: var(--muted);">
+          <p>Cycles: <span id="cycleCount" style="color: #ffffff; font-weight: 700;">0</span></p>
+          <p>Time: <span id="sessionTime" style="color: #ffffff; font-weight: 700;">0:00</span></p>
+        </div>
+      </div>
+      <div class="breathing-controls">
+        <button class="button-link" onclick="pauseBreathing()" id="pauseBtn">Pause</button>
+        <button class="button-link secondary" onclick="stopBreathing()">Complete</button>
+      </div>
+      <div class="breathing-stats">
+        <p>Cycles: <span id="cycleCount" style="color: var(--accent);">0</span></p>
+        <p>Elapsed: <span id="sessionTime" style="color: var(--accent);">0:00</span></p>
+      </div>
+    </div>
+  </div>
+
+    <!-- Breathing Tips -->
+    <div class="breathing-tips timeline-card" style="padding: 1.8rem;">
+      <div class="section-index">02 / GUIDELINES</div>
+      <h3 style="margin-bottom: 1rem;">Principles for Effective Breathwork</h3>
+      <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.65rem;">
+        <li style="display: flex; align-items: center; gap: 0.75rem; color: var(--text);">
+          <span class="status-dot"></span> Find a quiet, seated posture with uncrossed legs and relaxed shoulders.
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.75rem; color: var(--text);">
+          <span class="status-dot"></span> Inhale softly through the nose, expanding the lower abdomen rather than lifting shoulders.
+        </li>
+        <li style="display: flex; align-items: center; gap: 0.75rem; color: var(--text);">
+          <span class="status-dot"></span> Match your focus with the breathing circle rhythm without straining.
+        </li>
+      </ul>
+    </div>
+  </section>
+{% endblock %}

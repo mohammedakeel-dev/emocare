@@ -1,0 +1,171 @@
+{% extends "app_base.html" %}
+{% block title %}Goals & Milestones · EmoCare{% endblock %}
+{% block header_title %}Goals & Milestones{% endblock %}
+
+{% block content %}
+  <section class="goals-section" style="max-width: 1100px; margin: 0 auto;">
+    <div class="goals-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div class="section-index">01 / INTENTIONAL LIVING</div>
+        <h2>Goals & Progress Trackers</h2>
+        <p style="margin-top: 0.35rem;">Set meaningful emotional goals, build sustainable streaks, and acknowledge growth.</p>
+      </div>
+      <button class="btn btn-primary" onclick="showGoalForm()">
+        <span>🎯 New Goal</span>
+      </button>
+    </div>
+
+    <!-- Goal Creation Form -->
+    <div id="goalForm" class="timeline-card hidden" style="margin-bottom: 2.5rem; padding: 2.2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div>
+          <div class="section-index">INTENTION</div>
+          <h3 style="margin: 0;">Set an Emotional Care Goal</h3>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="hideGoalForm()">✕ Close</button>
+      </div>
+      <form method="POST" action="{{ url_for('goals') }}">
+        <input type="hidden" name="action" value="create">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label>
+            <span>Goal Title *</span>
+            <input type="text" name="title" placeholder="e.g., Practice 5 minutes of box breathing daily" required>
+          </label>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label>
+            <span>Intention Description</span>
+            <textarea name="description" rows="3" placeholder="Why does this goal matter to your emotional wellness?"></textarea>
+          </label>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+          <div class="form-group">
+            <label>
+              <span>Category</span>
+              <select name="category">
+                <option value="">Select category...</option>
+                <option value="Wellness">🌿 Wellness</option>
+                <option value="Emotional">💜 Emotional</option>
+                <option value="Physical">🏃 Physical</option>
+                <option value="Social">🤝 Social</option>
+                <option value="Personal">⭐ Personal</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <span>Target Completion Date</span>
+              <input type="date" name="target_date">
+            </label>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.85rem;">
+          <button type="submit" class="btn btn-primary">Create Goal</button>
+          <button type="button" class="btn btn-secondary" onclick="hideGoalForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Active Streaks Panel -->
+    <div class="streaks-panel" style="margin-bottom: 2.5rem;">
+      <div class="section-index">02 / CONTINUITY</div>
+      <h3 style="margin-bottom: 1.25rem;">Active Streaks</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+        <div class="timeline-card" style="display: flex; align-items: center; gap: 1.25rem; padding: 1.5rem;">
+          <div style="font-size: 2.4rem; line-height: 1;">💬</div>
+          <div>
+            <span class="section-index">CARE CHAT</span>
+            <p style="font-size: 1.7rem; font-weight: 800; color: #ffffff; margin: 0; line-height: 1;">
+              {{ streaks.get('chat', {}).get('current_streak', 0) or 0 }} <span style="font-size: 0.85rem; font-weight: 500; color: var(--muted);">days</span>
+            </p>
+          </div>
+        </div>
+        <div class="timeline-card" style="display: flex; align-items: center; gap: 1.25rem; padding: 1.5rem;">
+          <div style="font-size: 2.4rem; line-height: 1;">📔</div>
+          <div>
+            <span class="section-index">JOURNAL</span>
+            <p style="font-size: 1.7rem; font-weight: 800; color: #ffffff; margin: 0; line-height: 1;">
+              {{ streaks.get('journal', {}).get('current_streak', 0) or 0 }} <span style="font-size: 0.85rem; font-weight: 500; color: var(--muted);">days</span>
+            </p>
+          </div>
+        </div>
+        <div class="timeline-card" style="display: flex; align-items: center; gap: 1.25rem; padding: 1.5rem;">
+          <div style="font-size: 2.4rem; line-height: 1;">🧘</div>
+          <div>
+            <span class="section-index">BREATHWORK</span>
+            <p style="font-size: 1.7rem; font-weight: 800; color: #ffffff; margin: 0; line-height: 1;">
+              {{ streaks.get('breathing', {}).get('current_streak', 0) or 0 }} <span style="font-size: 0.85rem; font-weight: 500; color: var(--muted);">days</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Goals List -->
+    <div class="goals-list">
+      <div class="section-index">03 / ACTIVE OBJECTIVES</div>
+      <h3 style="margin-bottom: 1.25rem;">Your Commitments</h3>
+      {% if goals %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem;">
+          {% for goal in goals %}
+            <div class="timeline-card {% if goal.completed %}completed{% endif %}" style="display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem;">
+                <h4 style="font-size: 1.15rem; color: #ffffff; margin: 0;">{{ goal.title }}</h4>
+                {% if goal.completed %}
+                  <span class="tag" style="border-color: var(--accent-emerald); color: var(--accent-emerald);">✓ Completed</span>
+                {% endif %}
+              </div>
+              {% if goal.description %}
+                <p style="color: var(--muted); margin: 0; font-size: 0.92rem;">{{ goal.description }}</p>
+              {% endif %}
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                {% if goal.category %}
+                  <span class="tag">{{ goal.category }}</span>
+                {% endif %}
+                {% if goal.target_date %}
+                  <span class="time" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted);">Target: {{ goal.target_date }}</span>
+                {% endif %}
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+                {% if not goal.completed %}
+                  <form method="POST" action="{{ url_for('goals') }}" style="display: inline;">
+                    <input type="hidden" name="action" value="complete">
+                    <input type="hidden" name="goal_id" value="{{ goal.id }}">
+                    <button type="submit" class="btn btn-primary btn-sm">Mark Done ✓</button>
+                  </form>
+                {% else %}
+                  <span style="font-size: 0.85rem; color: var(--accent-emerald); font-weight: 700;">Completed</span>
+                {% endif %}
+                <form method="POST" action="{{ url_for('goals') }}" style="display: inline;" onsubmit="return confirm('Delete this goal?');">
+                  <input type="hidden" name="action" value="delete">
+                  <input type="hidden" name="goal_id" value="{{ goal.id }}">
+                  <button type="submit" class="delete-btn" title="Delete goal">✕</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="placeholder-box">
+          <div class="section-index" style="justify-content: center;">NO ACTIVE GOALS</div>
+          <p style="font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Set Your First Milestone</p>
+          <p>Tap "New Goal" above to create an empowering intention for your emotional care.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <script>
+    function showGoalForm() {
+      const form = document.getElementById('goalForm');
+      if (form) {
+        form.classList.remove('hidden');
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    function hideGoalForm() {
+      const form = document.getElementById('goalForm');
+      if (form) form.classList.add('hidden');
+    }
+  </script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "app_base.html" %}
+{% block title %}Analytics & Patterns · EmoCare{% endblock %}
+{% block header_title %}Emotional Analytics{% endblock %}
+
+{% block content %}
+  <section class="panel charts-page">
+    <div class="panel-head">
+      <div>
+        <div class="section-index">01 / OVERVIEW</div>
+        <h2>Emotional Flow & Metrics</h2>
+        <p style="margin-top: 0.35rem;">Track changes in emotional frequency, intensity distribution, and stability over time.</p>
+      </div>
+    </div>
+
+    <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem; margin-top: 1.5rem;">
+      <div class="timeline-card" style="padding: 1.5rem;">
+        <div class="section-index">TIMELINE</div>
+        <h3>Emotion Trend Line</h3>
+        <canvas id="moodTrend"></canvas>
+      </div>
+      <div class="timeline-card" style="padding: 1.5rem;">
+        <div class="section-index">DISTRIBUTION</div>
+        <h3>Intensity Distribution</h3>
+        <canvas id="moodPie"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-summary" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+      <div class="section-index">02 / FOCUS BREAKDOWN</div>
+      <h4 style="margin-bottom: 1rem;">This Week in Focus</h4>
+      <ul style="list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.85rem; padding: 0;">
+        {% for label, value in distribution_pairs %}
+          <li style="padding: 1rem 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.02); display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: var(--text);">{{ label }}</strong>
+            <span class="pill-link" style="pointer-events: none;">{{ value }} {{ 'entry' if value == 1 else 'entries' }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+{% endblock %}
+
+{% block head_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    window.EMOCARE_CHARTS = {{ chart_payload|tojson }};
+  </script>
+  <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "app_base.html" %}
+{% block title %}Care companion · EmoCare{% endblock %}
+{% block page_label %}Care companion{% endblock %}
+{% block header_title %}A conversation with room to breathe{% endblock %}
+{% block page_subtitle %}Share as much or as little as you need. This space is yours.{% endblock %}
+
+{% block content %}
+<section class="companion-page">
+  <div class="companion-workspace">
+    <header class="conversation-bar">
+      <div class="companion-identity"><span class="companion-avatar" aria-hidden="true"><span>e</span><i></i></span><div><strong>Your EmoCare companion</strong><small><i></i> Here with you</small></div></div>
+      <form method="post" action="{{ url_for('clear_all_chat') }}" onsubmit="return confirm('Are you sure you want to delete ALL conversations? This cannot be undone.');"><button type="submit" class="conversation-reset"><span aria-hidden="true">↺</span> Clear conversation</button></form>
+    </header>
+
+    <div class="conversation-columns">
+      <div class="conversation-main">
+        <div class="chat-thread" id="chatThread" aria-live="polite" aria-relevant="additions text">
+          {% for message in messages %}
+          <article class="chat-message {% if message.author == 'user' %}user{% else %}assistant{% endif %}">
+            <div class="chat-meta"><div><strong>{{ message.display_author }}</strong><time>{{ message.display_time }}</time></div>{% if message.id %}<form method="post" action="{{ url_for('delete_message', message_id=message.id) }}" onsubmit="return confirm('Are you sure you want to delete this message?');"><button type="submit" class="delete-btn" title="Delete message" aria-label="Delete message">×</button></form>{% endif %}</div>
+            {% if message.image_filename %}<div class="message-image"><img src="{{ url_for('serve_image', filename=message.image_filename) }}" alt="Shared snapshot" /></div>{% endif %}
+            <p>{{ message.content }}</p>
+            {% if message.emotion %}<small class="tag"><span>{{ message.emotion }}</span>{% if message.intensity %}<span>· {{ message.intensity }}/5</span>{% endif %}{% if message.detection_source == 'camera' %}<span aria-label="Detected from camera">◉</span>{% elif message.detection_source == 'image' %}<span aria-label="Detected from image">▧</span>{% endif %}</small>{% endif %}
+          </article>
+          {% endfor %}
+          {% if not messages %}<div class="conversation-empty"><span class="empty-orbit" aria-hidden="true"><i></i></span><span class="section-eyebrow">A PLACE TO BEGIN</span><h2>What’s on your mind?</h2><p>There’s no perfect way to start. Share a feeling, a moment, or simply take your time.</p></div>{% endif %}
+        </div>
+        {% if analysis %}<aside class="analysis-card"><span class="analysis-spark">✳</span><div><span class="section-eyebrow">A GENTLE REFLECTION</span><h3>{{ analysis.emotion }} <span>·</span> {{ analysis.intensity }}/5</h3><p>Confidence {{ (analysis.confidence * 100)|round(0) }}%{% if analysis.keywords %}<span> · </span>{{ analysis.keywords|join(', ') }}{% endif %}</p></div></aside>{% endif %}
+      </div>
+
+      <aside class="companion-tools" aria-label="Ways to share">
+        <article class="tool-card camera-tool"><div class="tool-card-heading"><span class="tool-icon">◉</span><span class="section-eyebrow">OPTIONAL CHECK-IN</span></div><h3>Notice your expression</h3><p>Use a snapshot if it feels helpful. Images are analyzed locally.</p><div class="face-preview" id="cameraPreview"><video id="videoElement" autoplay playsinline></video><canvas id="canvasElement"></canvas><span id="cameraPlaceholder">Your camera is off</span></div><div class="camera-actions"><button type="button" id="toggleCamera" class="btn btn-soft btn-sm">Turn camera on</button><div id="cameraControls"><button type="button" id="captureBtn" class="btn btn-primary btn-sm">Capture</button><button type="button" id="stopCameraBtn" class="btn btn-soft btn-sm">Stop</button></div></div></article>
+        <article class="tool-card image-tool"><div class="tool-card-heading"><span class="tool-icon">▧</span><span class="section-eyebrow">ADD A PHOTO</span></div><h3>A moment in a picture</h3><p>Share an image as part of your check-in.</p><div class="upload-dropzone" id="uploadDropzone"><input type="file" id="imageInput" accept="image/*" /><span class="upload-icon">＋</span><strong>Choose an image</strong><small>Tap to browse your photos</small></div><div id="imagePreview"><img id="previewImg" src="" alt="Image selected for sharing" /><button type="button" id="removePreview" class="btn btn-soft btn-sm">Remove image</button></div></article>
+        <div class="privacy-whisper"><span>◈</span><p>Your reflections stay connected to your private EmoCare space.</p></div>
+      </aside>
+    </div>
+
+    <section class="composer-dock">
+      <form method="post" enctype="multipart/form-data" id="chatForm">
+        <div class="message-composer"><label class="sr-only" for="messageInput">Write a message to your EmoCare companion</label><textarea name="message" id="messageInput" rows="2" placeholder="Write what you’re feeling… (Enter to send · Shift+Enter for a new line)"></textarea><input type="file" name="image" id="hiddenImageInput" accept="image/*" /><input type="hidden" name="camera_image" id="cameraImageInput" />
+          <div class="composer-footer"><div class="composer-tools"><label for="imageInput" title="Attach image" class="composer-tool"><span aria-hidden="true">▧</span><span>Photo</span></label><button type="button" id="cameraBtn" title="Camera snapshot" class="composer-tool"><span aria-hidden="true">◉</span><span>Snapshot</span></button><button type="button" id="voiceOutputBtn" title="Read aloud" class="composer-tool"><span aria-hidden="true">♫</span><span>Listen</span></button></div><button type="submit" class="send-btn"><span>Send a note</span><span class="send-arrow" aria-hidden="true">↗</span></button></div>
+        </div>
+      </form>
+      <p class="composer-caption">A gentle reminder: you can share at your own pace.</p>
+    </section>
+  </div>
+</section>
+{% endblock %}
+
+{% block head_scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+<script src="{{ url_for('static', filename='js/voice.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chat_composer.js') }}"></script>
+{% endblock %}

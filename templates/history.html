@@ -1,0 +1,69 @@
+{% extends "app_base.html" %}
+{% block title %}Conversations & Timeline · EmoCare{% endblock %}
+{% block header_title %}Conversation History{% endblock %}
+
+{% block content %}
+  <section class="panel history-page">
+    <div class="panel-head">
+      <div>
+        <div class="section-index">01 / ENCRYPTED TIMELINE</div>
+        <h2>Private Conversation Log</h2>
+        <p style="margin-top: 0.35rem;">Every reflection remains stored locally on your device with complete privacy.</p>
+      </div>
+    </div>
+
+    {% if grouped_history %}
+      <div class="history-timeline" style="display: flex; flex-direction: column; gap: 1.75rem; margin-top: 1.5rem;">
+        {% for day_block in grouped_history %}
+          <article class="timeline-card" style="padding: 1.8rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--border);">
+              <div>
+                <div class="section-index">RECORDED DAY</div>
+                <h3 style="margin: 0; color: #ffffff;">{{ day_block.day }}</h3>
+              </div>
+              <span class="pill-link" style="pointer-events: none;">{{ day_block.messages|length }} {{ 'message' if day_block.messages|length == 1 else 'messages' }}</span>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.9rem; padding: 0;">
+              {% for message in day_block.messages %}
+                <li style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 1.1rem 1.3rem; border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border);">
+                  <span class="time" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); white-space: nowrap; margin-top: 2px;">{{ message.time }}</span>
+                  <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                      <strong style="color: var(--text); font-size: 0.95rem;">{{ message.author }}</strong>
+                      {% if message.emotion %}
+                        <span class="tag">
+                          {{ message.emotion }}
+                          {% if message.detection_source == 'camera' %}📷{% elif message.detection_source == 'image' %}📎{% endif %}
+                        </span>
+                      {% endif %}
+                    </div>
+                    {% if message.image_filename %}
+                      <div class="message-image" style="margin: 0.65rem 0;">
+                        <img src="{{ url_for('serve_image', filename=message.image_filename) }}" alt="Snapshot" style="max-width: 220px; border-radius: 10px; border: 1px solid var(--border);" />
+                      </div>
+                    {% endif %}
+                    <p style="margin: 0; color: var(--text); line-height: 1.65;">{{ message.content }}</p>
+                  </div>
+                  {% if message.id %}
+                    <form method="post" action="{{ url_for('delete_history_message', message_id=message.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this message?');">
+                      <button type="submit" class="delete-btn" title="Delete message">✕</button>
+                    </form>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="placeholder-box">
+        <div class="section-index" style="justify-content: center;">LOG EMPTY</div>
+        <p style="font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">No History Logged Yet</p>
+        <p>Visit Care Chat to begin your reflection journey with EmoCare.</p>
+        <a href="{{ url_for('chat') }}" class="btn btn-primary" style="margin-top: 1.25rem;">
+          <span>Start Care Chat</span>
+        </a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "app_base.html" %}
+{% block title %}Achievements · EmoCare{% endblock %}
+{% block header_title %}Your Achievements{% endblock %}
+
+{% block content %}
+  <section class="panel achievements-page">
+    <div class="achievements-header">
+      <div class="section-index">01 / RECOGNITION</div>
+      <h2>Level {{ achievements.level }} · {{ achievements.current_streak }} Day Streak 🔥</h2>
+      <p style="margin-top: 0.35rem;">You've logged {{ achievements.total_messages }} reflections so far. Keep honoring your inner state.</p>
+    </div>
+
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem; margin-top: 1.5rem;">
+      <div class="timeline-card" style="text-align: center; padding: 1.8rem 1.5rem;">
+        <div class="section-index" style="justify-content: center;">TOTAL LOGS</div>
+        <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; line-height: 1.1; margin: 0.35rem 0;">{{ achievements.total_messages }}</div>
+        <p style="font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Reflections</p>
+      </div>
+      <div class="timeline-card" style="text-align: center; padding: 1.8rem 1.5rem;">
+        <div class="section-index" style="justify-content: center;">STREAK</div>
+        <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; line-height: 1.1; margin: 0.35rem 0;">{{ achievements.current_streak }}</div>
+        <p style="font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Consecutive Days</p>
+      </div>
+      <div class="timeline-card" style="text-align: center; padding: 1.8rem 1.5rem;">
+        <div class="section-index" style="justify-content: center;">TIER LEVEL</div>
+        <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; line-height: 1.1; margin: 0.35rem 0;">{{ achievements.level }}</div>
+        <p style="font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Sanctuary Level</p>
+      </div>
+      <div class="timeline-card" style="text-align: center; padding: 1.8rem 1.5rem;">
+        <div class="section-index" style="justify-content: center;">BADGES</div>
+        <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; line-height: 1.1; margin: 0.35rem 0;">{{ achievements.achievements|length }}</div>
+        <p style="font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Unlocked Badges</p>
+      </div>
+    </div>
+
+    <div class="achievements-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem;">
+      {% for achievement in achievements.achievements %}
+        <article class="timeline-card" style="text-align: center; padding: 2rem 1.5rem;">
+          <div style="font-size: 2.8rem; margin-bottom: 0.75rem;">{{ achievement.icon }}</div>
+          <h3 style="color: #ffffff; margin-bottom: 0.35rem;">{{ achievement.name }}</h3>
+          <p style="font-size: 0.9rem; color: var(--muted);">{{ achievement.description }}</p>
+        </article>
+      {% endfor %}
+    </div>
+
+    {% if achievements.achievements|length == 0 %}
+      <div class="placeholder-box">
+        <div class="section-index" style="justify-content: center;">NO BADGES YET</div>
+        <p style="font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Begin Your Journey</p>
+        <p>Log your emotions in Care Chat to unlock milestones and badges.</p>
+        <a href="{{ url_for('chat') }}" class="btn btn-primary" style="margin-top: 1.25rem;">Begin Logging</a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111323" />
+    <title>{% block title %}EmoCare · A space to feel{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/redesign.css') }}" />
+    {% block head_scripts %}{% endblock %}
+  </head>
+  <body class="member-app">
+    <div class="ambient ambient-one" aria-hidden="true"></div><div class="ambient ambient-two" aria-hidden="true"></div>
+    <aside class="app-rail" aria-label="EmoCare workspace navigation">
+      <a class="brand rail-brand" href="{{ url_for('dashboard') }}" aria-label="EmoCare dashboard"><span class="brand-mark" aria-hidden="true"><span></span></span><span>em<em>o</em>care</span></a>
+      <div class="rail-section-label">YOUR SPACE</div>
+      <nav class="rail-nav" aria-label="Main navigation">
+        <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}is-active{% endif %}"><span class="nav-glyph">⌂</span><span>Overview</span></a>
+        <a href="{{ url_for('chat') }}" class="{% if request.endpoint == 'chat' %}is-active{% endif %}"><span class="nav-glyph">◌</span><span>Care companion</span></a>
+        <a href="{{ url_for('journal') }}" class="{% if request.endpoint == 'journal' %}is-active{% endif %}"><span class="nav-glyph">✎</span><span>Journal</span></a>
+        <a href="{{ url_for('calendar') }}" class="{% if request.endpoint == 'calendar' %}is-active{% endif %}"><span class="nav-glyph">▦</span><span>Mood calendar</span></a>
+        <a href="{{ url_for('history') }}" class="{% if request.endpoint == 'history' %}is-active{% endif %}"><span class="nav-glyph">↺</span><span>Conversations</span></a>
+      </nav>
+      <div class="rail-section-label rail-tools-label">EXPLORE</div>
+      <nav class="rail-nav rail-tools" aria-label="Wellbeing tools">
+        <a href="{{ url_for('charts') }}" class="{% if request.endpoint == 'charts' %}is-active{% endif %}"><span class="nav-glyph">⌁</span><span>Insights</span></a>
+        <a href="{{ url_for('reports') }}" class="{% if request.endpoint in ['reports', 'daily_report'] %}is-active{% endif %}"><span class="nav-glyph">▤</span><span>Reports</span></a>
+        <a href="{{ url_for('activities') }}" class="{% if request.endpoint == 'activities' %}is-active{% endif %}"><span class="nav-glyph">✳</span><span>Care rituals</span></a>
+        <a href="{{ url_for('breathing') }}" class="{% if request.endpoint == 'breathing' %}is-active{% endif %}"><span class="nav-glyph">≈</span><span>Breathing</span></a>
+        <a href="{{ url_for('goals') }}" class="{% if request.endpoint == 'goals' %}is-active{% endif %}"><span class="nav-glyph">◎</span><span>Goals</span></a>
+        <a href="{{ url_for('music') }}" class="{% if request.endpoint == 'music' %}is-active{% endif %}"><span class="nav-glyph">♫</span><span>Music</span></a>
+        <a href="{{ url_for('games') }}" class="{% if request.endpoint == 'games' %}is-active{% endif %}"><span class="nav-glyph">✧</span><span>Mindful games</span></a>
+      </nav>
+      <div class="rail-bottom">
+        <div class="private-card"><span class="private-icon">◈</span><div><strong>Private by nature</strong><small>Your reflections stay yours.</small></div></div>
+        <a class="rail-signout" href="{{ url_for('logout') }}"><span class="nav-glyph">↗</span> Sign out</a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="workspace-topbar">
+        <div class="mobile-brand"><a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-mark"><span></span></span><span>em<em>o</em>care</span></a></div>
+        <div class="breadcrumb"><span>YOUR SPACE</span><b>/</b><strong>{% block page_label %}{{ request.endpoint|replace('_', ' ')|title }}{% endblock %}</strong></div>
+        <div class="topbar-actions"><span class="welcome-name">{{ user_name if user_name else 'Member' }}</span><span class="profile-orb" aria-hidden="true">{{ (user_name or 'M')[:1]|upper }}</span></div>
+      </header>
+
+      <main class="workspace-content">
+        <header class="page-heading">
+          <div class="page-heading-copy"><span class="page-overline"><i></i> A MOMENT FOR YOU</span><h1>{% block header_title %}{{ user_name }}{% endblock %}</h1><p class="page-subtitle">{% block page_subtitle %}A little space to notice how you’re feeling today.{% endblock %}</p></div>
+          <a class="btn btn-primary heading-action" href="{{ url_for('chat') }}"><span class="button-orbit">◌</span> Talk it through <span aria-hidden="true">↗</span></a>
+        </header>
+        {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+        <div class="page-content">{% block content %}{% endblock %}</div>
+      </main>
+      <footer class="workspace-footer"><span>Take it one feeling at a time.</span><span>© <span id="year">2026</span> EmoCare</span></footer>
+    </div>
+
+    <div id="activityModalOverlay" class="activity-modal-overlay hidden"></div>
+    <div id="activityModal" class="activity-modal hidden" role="dialog" aria-modal="true" aria-labelledby="activityModalTitle"><div class="activity-modal-content"><button id="activityCloseBtn" class="activity-modal-close" aria-label="Close">✕</button><div class="section-index">A MOMENT TO RESET</div><h3 id="activityModalTitle">Activity</h3><p id="activityModalSubtitle">Details about the activity will appear here.</p><div class="activity-timer-row"><div id="activityTimer" class="activity-timer">02:00</div><div class="activity-controls"><button id="activityStartTimer" class="btn btn-primary btn-sm">Start timer</button><button id="activityMarkDone" class="btn btn-secondary btn-sm">Mark done</button></div></div></div></div>
+    <div class="loading-screen" aria-hidden="true"><div class="loading-emblem"><span></span><span></span><span></span></div></div>
+    <script src="{{ url_for('static', filename='js/theme_reference.js') }}"></script>
+  </body>
+</html>

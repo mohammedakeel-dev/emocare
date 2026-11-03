@@ -1,0 +1,55 @@
+{% extends "app_base.html" %}
+{% block title %}Care Rituals · EmoCare{% endblock %}
+{% block header_title %}Activity & Ritual Sanctuary{% endblock %}
+
+{% block content %}
+  <section class="panel activities-page">
+    <div class="panel-head">
+      <div>
+        <div class="section-index">01 / MINDFUL PRACTICES</div>
+        <h2>Suggested for {{ current_emotion }}</h2>
+        <p style="margin-top: 0.35rem;">Guided micro-practices and mindfulness rituals specifically recommended for your current state.</p>
+      </div>
+    </div>
+
+    <ul class="activities-list" style="list-style: none; padding: 0; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+      {% for activity in activities %}
+        <li class="timeline-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+          <div style="flex: 1; min-width: 260px;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+              <strong style="font-size: 1.15rem; color: var(--text);">{{ activity.title }}</strong>
+            </div>
+            <p style="color: var(--muted); margin: 0 0 0.5rem 0; font-size: 0.95rem;">{{ activity.subtitle }}</p>
+            {% if activity.video_query %}
+              <p class="video-suggest" style="margin: 0; font-size: 0.85rem;">
+                <span style="color: var(--muted);">Video Guide:</span>
+                <a href="https://www.youtube.com/results?search_query={{ activity.video_query|urlencode }}" target="_blank" rel="noopener" class="pill-link" style="margin-left: 0.35rem; min-height: 32px; padding: 0.3rem 0.75rem;">
+                  <span>▶ Watch on YouTube</span>
+                </a>
+              </p>
+            {% endif %}
+          </div>
+          <div class="activity-actions" style="display: flex; gap: 0.65rem; align-items: center;">
+            <button class="btn btn-primary btn-sm activity-start-btn" data-duration="120">
+              <span>⏱ Start (2m)</span>
+            </button>
+            {% if activity.video_query %}
+              <a class="btn btn-secondary btn-sm watch-video-btn" href="https://www.youtube.com/results?search_query={{ activity.video_query|urlencode }}" target="_blank" rel="noopener">
+                <span>Video</span>
+              </a>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div style="margin-top: 2rem; padding: 1.25rem 1.5rem; border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem;">
+      <span class="status-dot"></span>
+      <p style="margin: 0; font-size: 0.88rem; color: var(--muted);">Care routines automatically refresh based on your evolving emotion logs.</p>
+    </div>
+  </section>
+{% endblock %}
+
+{% block head_scripts %}
+  <script defer src="{{ url_for('static', filename='js/activities.js') }}"></script>
+{% endblock %}

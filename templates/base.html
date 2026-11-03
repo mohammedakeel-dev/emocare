@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111323" />
+    <title>{% block title %}EmoCare · A space to feel{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/redesign.css') }}" />
+  </head>
+  <body class="auth-page">
+    <div class="auth-orbit auth-orbit-one" aria-hidden="true"></div>
+    <div class="auth-orbit auth-orbit-two" aria-hidden="true"></div>
+    <header class="auth-topbar">
+      <a class="brand" href="{{ url_for('login') }}" aria-label="EmoCare home">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>em<em>o</em>care</span>
+      </a>
+      <span class="privacy-note"><span class="status-dot"></span> Your space is private</span>
+      <nav class="auth-nav" aria-label="Account navigation">
+        <a href="{{ url_for('login') }}">Log in</a>
+        <a class="auth-nav-join" href="{{ url_for('signup') }}">Create account <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main class="auth-stage">
+      <section class="auth-story">
+        <span class="auth-kicker"><span class="kicker-line"></span> A little space for all of you</span>
+        <h1>Feel what you<br />feel. <span>Find your way.</span></h1>
+        <p>Emotional care that meets you where you are—with thoughtful conversations, gentle rituals, and room to grow at your own pace.</p>
+        <div class="auth-values" aria-label="EmoCare values">
+          <span><i aria-hidden="true">✳</i> Listen inward</span>
+          <span><i aria-hidden="true">◌</i> Grow gently</span>
+          <span><i aria-hidden="true">⌁</i> Stay private</span>
+        </div>
+        <div class="auth-orb-art" aria-hidden="true"><span class="orb-core"></span><span class="orb-ring orb-ring-a"></span><span class="orb-ring orb-ring-b"></span><span class="orb-spark orb-spark-a"></span><span class="orb-spark orb-spark-b"></span></div>
+      </section>
+
+      <section class="auth-card">
+        <div class="auth-card-glow" aria-hidden="true"></div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+
+    <footer class="auth-footer"><span>EmoCare</span><span>Emotional care, at your pace.</span><span>© <span id="year">2026</span></span></footer>
+    <div class="loading-screen" aria-hidden="true"><div class="loading-emblem"><span></span><span></span><span></span></div></div>
+    <script src="{{ url_for('static', filename='js/theme_reference.js') }}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

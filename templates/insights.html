@@ -1,0 +1,66 @@
+{% extends "app_base.html" %}
+{% block title %}AI Insights · EmoCare{% endblock %}
+{% block header_title %}AI-Powered Insights{% endblock %}
+
+{% block content %}
+  <section class="panel insights-page">
+    <div class="panel-head">
+      <div>
+        <div class="section-index">01 / ARTIFICIAL INTELLIGENCE</div>
+        <h2>Emotional Intelligence Synthesis</h2>
+        <p style="margin-top: 0.35rem;">Discover subtle patterns and correlates across your emotional reflections.</p>
+      </div>
+    </div>
+
+    {% if insights.insights %}
+      <div class="insights-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        {% for insight in insights.insights %}
+          <article class="timeline-card" style="padding: 1.8rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">{{ insight.icon }}</div>
+            <h3 style="color: #ffffff; margin-bottom: 0.35rem;">{{ insight.title }}</h3>
+            <p style="font-size: 0.92rem; color: var(--muted);">{{ insight.description }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if insights.patterns %}
+      <div style="margin: 2.5rem 0 1.25rem;">
+        <div class="section-index">02 / DETECTED PATTERNS</div>
+      </div>
+      <div class="insights-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        {% for pattern in insights.patterns %}
+          <article class="timeline-card" style="padding: 1.8rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">{{ pattern.icon }}</div>
+            <h3 style="color: #ffffff; margin-bottom: 0.35rem;">{{ pattern.title }}</h3>
+            <p style="font-size: 0.92rem; color: var(--muted);">{{ pattern.description }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if insights.recommendations %}
+      <div style="margin: 2.5rem 0 1.25rem;">
+        <div class="section-index">03 / RECOMMENDATIONS</div>
+      </div>
+      <div class="insights-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+        {% for rec in insights.recommendations %}
+          <article class="timeline-card" style="padding: 1.8rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">{{ rec.icon }}</div>
+            <h3 style="color: #ffffff; margin-bottom: 0.35rem;">{{ rec.title }}</h3>
+            <p style="font-size: 0.92rem; color: var(--muted);">{{ rec.description }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if not insights.insights and not insights.patterns and not insights.recommendations %}
+      <div class="placeholder-box">
+        <div class="section-index" style="justify-content: center;">NO INSIGHTS YET</div>
+        <p style="font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem;">Awaiting Data</p>
+        <p>Start logging your emotions to unlock personalized AI-powered insights.</p>
+        <a href="{{ url_for('chat') }}" class="btn btn-primary" style="margin-top: 1.25rem;">Begin Your Journey</a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
